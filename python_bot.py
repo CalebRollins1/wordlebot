@@ -67,7 +67,7 @@ class Wordle:
 
 
 
-    
+
     def get_remaining_words(self):
         L = []
         for elem in solutions:
@@ -75,6 +75,48 @@ class Wordle:
                 L.append(elem)
 
         return L
+
+
+def make_guess(guess,answer,greens,yellows,grays):
+    key = [0,0,0,0,0]
+    for i in range(5):
+        if guess[i]==answer[i]:
+            key[i]+=2
+            greens.append((i,guess[i]))
+            if guess[i] in yellows:
+                yellows.remove(guess[i])
+        elif guess[i] in answer:
+            key[i]+=1
+            yellows.add(guess[i])
+        else:
+            grays.add(guess[i])
+    current_guess = guess
+    return key,greens,yellows,grays
+
+
+def possible(word,greens,yellows,grays):
+
+    for i,elem in greens:
+        if word[i]!=elem:
+            return False
+    y = 0
+    for elem in word:
+        if elem in grays:
+            return False
+        if elem in yellows:
+            y+=1
+    if y!=len(yellows):
+        return False
+
+    return True
+
+def get_remaining_words(solutions,greens,yellows,grays):
+    L = []
+    for elem in solutions:
+        if possible(elem,greens,yellows,grays):
+            L.append(elem)
+
+    return L
 
 @jit(nopython=True)
 def main():
@@ -87,12 +129,14 @@ def main():
         s = 0
         n = 0
         for sol in solutions:
+            greens = []
+            yellows = set()
+            grays = set()
 
-            W = Wordle(sol)
-            W.make_guess(g)
+            key,greens,yellows,grays = make_guess(g,sol,greens,yellows,grays)
             #W.make_guess('least')
             #print(W.yellows)
-            s+=len(W.get_remaining_words())
+            s+=len(get_remaining_words(greens,yellows,grays))
             n+=1
 
         score_dict[g] = s/n
