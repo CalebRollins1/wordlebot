@@ -275,6 +275,10 @@ def score_genetic_model_gy(model):
     g_score = model.weights['a']
     y_score = model.weights['b']
 
+    def score_func()
+
+
+    first_guess = max(model.score_dict, key = lambda x:model.score_dict[x])
 
     turn_list = {i+1:0 for i in range(9)}
     s = 0
@@ -282,7 +286,7 @@ def score_genetic_model_gy(model):
 
     for i,sol in enumerate(solutions):
 
-        turns = 0
+        turns = 1
 
 
 

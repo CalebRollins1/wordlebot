@@ -5,6 +5,7 @@ from sklearn.ensemble import RandomForestRegressor
 from sklearn.neural_network import MLPRegressor
 import gym
 import warnings
+import tensoflow as tf
 warnings.filterwarnings("ignore")
 
 
@@ -341,6 +342,9 @@ class Qlearner:
         self.gamma = gamma
         self.epsilon = epsilon
         self.Q = functional_Q(learner)
+
+    def pretrain(self):
+        pass
 
     def train(self,rounds):
         for i in range(rounds):
