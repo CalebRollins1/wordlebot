@@ -584,7 +584,23 @@ class Reinforce:
         discounted_rewards -= np.mean(discounted_rewards)
         discounted_rewards /= np.std(discounted_rewards)
         states = np.vstack(states)
-        print(tf.gradients(discounted_rewards,self.network))
+        opt = tf.keras.optimizers.SGD(learning_rate=0.1)
+        loss = discounted_rewards
+# Create an optimizer.
+        opt = tf.keras.optimizers.SGD(learning_rate=0.1)
+
+        # Compute the gradients for a list of variables.
+        with tf.GradientTape() as tape:
+          loss = discounted_rewards
+        grads = tape.gradient(loss, self.network)
+
+        # Process the gradients, for example cap them, etc.
+        # capped_grads = [MyCapper(g) for g in grads]
+        processed_grads = [process_gradient(g) for g in grads]
+
+        # Ask the optimizer to apply the processed gradients.
+        opt.apply_gradients(zip(processed_grads, self.network))
+        quit()
         loss = self.network.train_on_batch(states, discounted_rewards)
         return loss
 
